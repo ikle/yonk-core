@@ -102,7 +102,7 @@ struct yonk_node *yonk_get (struct yonk *o, long id)
 	struct yonk_node *n = &o->node;
 
 	if (!sqlite_compile (o->db, req, &o->get) ||
-	    sqlite3_bind_int64 (o->get, 1, id) != 0 ||
+	    !sqlite_bind (o->get, "l", id) ||
 	    sqlite3_step (o->get) != SQLITE_ROW)
 		return NULL;
 
@@ -123,7 +123,7 @@ long yonk_get_parent (struct yonk *o, long id)
 	const char *req = "SELECT parent FROM tree WHERE id = ?";
 
 	if (!sqlite_compile (o->db, req, &o->parent) ||
-	    sqlite3_bind_int64 (o->parent, 1, id) != 0 ||
+	    !sqlite_bind (o->parent, "l", id) ||
 	    sqlite3_step (o->parent) != SQLITE_ROW)
 		return 0;
 
@@ -146,8 +146,7 @@ long yonk_lookup (struct yonk *o, long parent, const char *label, int active)
 
 	s = active ? o->lookup_w : o->lookup_n;
 
-	if (sqlite3_bind_int64 (s, 1, parent) != 0 ||
-	    sqlite3_bind_text  (s, 2, label, -1, NULL) != 0 ||
+	if (!sqlite_bind (s, "ls", parent, label) ||
 	    sqlite3_step (s) != SQLITE_ROW)
 		return 0;
 
@@ -168,7 +167,7 @@ long *yonk_childs (struct yonk *o, long parent, int sorted)
 
 	s = o->nchilds;
 
-	if (sqlite3_bind_int64 (s, 1, parent) != 0 ||
+	if (!sqlite_bind (s, "l", parent) ||
 	    sqlite3_step (s) != SQLITE_ROW)
 		return NULL;
 
@@ -186,7 +185,7 @@ long *yonk_childs (struct yonk *o, long parent, int sorted)
 
 	s = sorted ? o->childs_s : o->childs;
 
-	if (sqlite3_bind_int64 (s, 1, parent) != 0)
+	if (!sqlite_bind (s, "l", parent))
 		return NULL;
 
 	for (i = 0; i < count; ++i)
@@ -214,7 +213,7 @@ long *yonk_slaves (struct yonk *o, long id)
 
 	s = o->nslaves;
 
-	if (sqlite3_bind_int64 (s, 1, id) != 0 ||
+	if (!sqlite_bind (s, "l", id) ||
 	    sqlite3_step (s) != SQLITE_ROW)
 		return NULL;
 
@@ -229,7 +228,7 @@ long *yonk_slaves (struct yonk *o, long id)
 
 	s = o->slaves;
 
-	if (sqlite3_bind_int64 (s, 1, id) != 0)
+	if (!sqlite_bind (s, "l", id))
 		return NULL;
 
 	for (i = 0; i < count; ++i)
@@ -256,7 +255,7 @@ static int yonk_mark (struct yonk *o, long id)
 
 	for (; id > 0; id = yonk_get_parent (o, id))
 		if (sqlite3_reset (o->mark) != 0 ||
-		    sqlite3_bind_int64 (o->mark, 1, id) != 0 ||
+		    !sqlite_bind (o->mark, "l", id) ||
 		    sqlite3_step (o->mark) != SQLITE_DONE)
 			return 0;
 
@@ -271,11 +270,7 @@ long yonk_add (struct yonk *o, long parent, long link, const char *label,
 			  "VALUES (?, ?, ?, ?, ?)";
 
 	if (!sqlite_compile (o->db, req, &o->add) ||
-	    sqlite3_bind_int64 (o->add, 1, parent)          != 0 ||
-	    sqlite3_bind_int64 (o->add, 2, link)            != 0 ||
-	    sqlite3_bind_text  (o->add, 3, label, -1, NULL) != 0 ||
-	    sqlite3_bind_int   (o->add, 4, kind)            != 0 ||
-	    sqlite3_bind_int   (o->add, 5, secure)          != 0 ||
+	    !sqlite_bind (o->add, "llsii", parent, link, label, kind, secure) ||
 	    sqlite3_step (o->add) != SQLITE_DONE)
 		return 0;
 
@@ -303,12 +298,12 @@ static int yonk_delete_tree (struct yonk *o, long id)
 	free (list);
 
 	if (!sqlite_compile (o->db, req_u, &o->del_u) ||
-	    sqlite3_bind_int64 (o->del_u, 1, id) != 0 ||
+	    !sqlite_bind (o->del_u, "l", id) ||
 	    sqlite3_step (o->del_u) != SQLITE_DONE)
 		return 0;
 
 	if (!sqlite_compile (o->db, req_d, &o->del_d) ||
-	    sqlite3_bind_int64 (o->del_d, 1, id) != 0 ||
+	    !sqlite_bind (o->del_d, "l", id) ||
 	    sqlite3_step (o->del_d) != SQLITE_DONE)
 		return 0;
 
