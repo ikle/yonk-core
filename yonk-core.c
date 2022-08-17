@@ -151,15 +151,15 @@ long *yonk_childs (struct yonk *o, long parent, int sorted)
 		return NULL;
 
 	if (!sorted && !sqlite_compile (o->db, req_u, &o->childs))
-		return NULL;
+		goto no_fetch;
 
 	if (sorted && !sqlite_compile (o->db, req_s, &o->childs_s))
-		return NULL;
+		goto no_fetch;
 
 	s = sorted ? o->childs_s : o->childs;
 
 	if (!sqlite_bind (s, "l", parent))
-		return NULL;
+		goto no_fetch;
 
 	for (i = 0; i < count; list[i++] = sqlite3_column_int64 (s, 1))
 		if (!sqlite_next (s))
@@ -186,7 +186,7 @@ long *yonk_slaves (struct yonk *o, long id)
 
 	if (!sqlite_compile (o->db, req_u, &o->slaves) ||
 	    !sqlite_bind (o->slaves, "l", id))
-		return NULL;
+		goto no_fetch;
 
 	for (i = 0; i < count; list[i++] = sqlite3_column_int64 (o->slaves, 1))
 		if (!sqlite_next (o->slaves))
