@@ -22,6 +22,9 @@ int sqlite_bind_va (sqlite3_stmt *s, const char *fmt, va_list ap)
 {
 	int i;
 
+	if (sqlite3_reset (s) != 0)
+		return 0;
+
 	for (i = 1; *fmt != '\0'; ++fmt, ++i)
 		switch (*fmt) {
 		case 'i': {
@@ -64,9 +67,6 @@ int sqlite_run (sqlite3_stmt *s, const char *fmt, ...)
 	va_list ap;
 	int ok;
 
-	if (sqlite3_reset (s) != 0)
-		return 0;
-
 	va_start (ap, fmt);
 	ok = sqlite_bind_va (s, fmt, ap);
 	va_end (ap);
@@ -78,9 +78,6 @@ int sqlite_first (sqlite3_stmt *s, const char *fmt, ...)
 {
 	va_list ap;
 	int ok;
-
-	if (sqlite3_reset (s) != 0)
-		return 0;
 
 	va_start (ap, fmt);
 	ok = sqlite_bind_va (s, fmt, ap);
