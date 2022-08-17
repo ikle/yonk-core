@@ -228,9 +228,13 @@ static int yonk_mark (struct yonk *o, long id)
 long yonk_add (struct yonk *o, long parent, long link, const char *label,
 	       int kind, int secure)
 {
-	const char *req = "INSERT OR REPLACE "
+	const char *req = "INSERT "
 			  "INTO tree (parent, link, label, kind, secure) "
 			  "VALUES (?, ?, ?, ?, ?)";
+	long id;
+
+	if ((id = yonk_lookup (o, parent, label)) != 0)
+		return id;
 
 	if (!sqlite_compile (o->db, req, &o->add) ||
 	    !sqlite_run (o->add, "llsii", parent, link, label, kind, secure) ||
