@@ -33,7 +33,7 @@ void yonk_free (struct yonk *o);
 
 struct yonk_node *yonk_get (struct yonk *o, long id);
 long  yonk_get_parent (struct yonk *o, long id);
-long  yonk_lookup (struct yonk *o, long parent, const char *label, int active);
+long  yonk_lookup (struct yonk *o, long parent, const char *label);
 long *yonk_childs (struct yonk *o, long parent, int sorted);
 long *yonk_slaves (struct yonk *o, long id);
 

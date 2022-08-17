@@ -15,7 +15,7 @@
 struct yonk {
 	sqlite3 *db;
 	struct yonk_node node;
-	sqlite3_stmt *get, *parent, *lookup_w, *lookup_n;
+	sqlite3_stmt *get, *parent, *lookup;
 	sqlite3_stmt *nchilds, *childs, *childs_s, *nslaves, *slaves;
 	sqlite3_stmt *mark, *add, *del_u, *del_d;
 	sqlite3_stmt *comm_d, *comm_u, *dis_d, *dis_u;
@@ -65,7 +65,7 @@ struct yonk *yonk_alloc (const char *path, const char *mode)
 	if (sqlite3_exec (o->db, init_req, NULL, NULL, NULL) != 0)
 		goto no_init;
 
-	o->lookup_n = o->lookup_w = o->parent = o->get = NULL;
+	o->lookup = o->parent = o->get = NULL;
 	o->slaves = o->nslaves = o->childs_s = o->childs = o->nchilds = NULL;
 	o->del_d = o->del_u = o->add = o->mark = NULL;
 	o->dis_u = o->dis_d = o->comm_u = o->comm_d = NULL;
@@ -84,8 +84,7 @@ void yonk_free (struct yonk *o)
 
 	sqlite3_finalize (o->get);
 	sqlite3_finalize (o->parent);
-	sqlite3_finalize (o->lookup_w);
-	sqlite3_finalize (o->lookup_n);
+	sqlite3_finalize (o->lookup);
 	sqlite3_finalize (o->nchilds);
 	sqlite3_finalize (o->childs);
 	sqlite3_finalize (o->childs_s);
@@ -137,26 +136,15 @@ long yonk_get_parent (struct yonk *o, long id)
 	return sqlite3_column_int64 (o->parent, 1);
 }
 
-long yonk_lookup (struct yonk *o, long parent, const char *label, int active)
+long yonk_lookup (struct yonk *o, long parent, const char *label)
 {
-	const char *req_w = "SELECT id FROM tree WHERE parent = ? AND label = ?"
-			    " AND active = 1";
-	const char *req_n = "SELECT id FROM tree WHERE parent = ? AND label = ?"
-			    " AND NOT (active = 1 AND dirty = 1)";
-	sqlite3_stmt *s;
+	const char *req = "SELECT id FROM tree WHERE parent = ? AND label = ?";
 
-	if (active && !sqlite_compile (o->db, req_w, &o->lookup_w))
+	if (!sqlite_compile (o->db, req, &o->lookup) ||
+	    !sqlite_first (o->lookup, "ls", parent, label))
 		return 0;
 
-	if (!active && !sqlite_compile (o->db, req_n, &o->lookup_n))
-		return 0;
-
-	s = active ? o->lookup_w : o->lookup_n;
-
-	if (!sqlite_first (s, "ls", parent, label))
-		return 0;
-
-	return sqlite3_column_int64 (s, 1);
+	return sqlite3_column_int64 (o->lookup, 1);
 }
 
 long *yonk_childs (struct yonk *o, long parent, int sorted)
