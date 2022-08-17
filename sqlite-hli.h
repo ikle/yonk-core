@@ -16,5 +16,6 @@
 int sqlite_compile (sqlite3 *o, const char *req, sqlite3_stmt **s);
 
 int sqlite_bind  (sqlite3_stmt *s, const char *fmt, ...);
+int sqlite_run   (sqlite3_stmt *s, const char *fmt, ...);
 
 #endif  /* SQLITE_HLI_H */

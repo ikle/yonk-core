@@ -58,3 +58,18 @@ int sqlite_bind (sqlite3_stmt *s, const char *fmt, ...)
 
 	return ok;
 }
+
+int sqlite_run (sqlite3_stmt *s, const char *fmt, ...)
+{
+	va_list ap;
+	int ok;
+
+	if (sqlite3_reset (s) != 0)
+		return 0;
+
+	va_start (ap, fmt);
+	ok = sqlite_bind_va (s, fmt, ap);
+	va_end (ap);
+
+	return ok && sqlite3_step (s) == SQLITE_DONE;
+}

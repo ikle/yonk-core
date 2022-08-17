@@ -254,9 +254,7 @@ static int yonk_mark (struct yonk *o, long id)
 		return 0;
 
 	for (; id > 0; id = yonk_get_parent (o, id))
-		if (sqlite3_reset (o->mark) != 0 ||
-		    !sqlite_bind (o->mark, "l", id) ||
-		    sqlite3_step (o->mark) != SQLITE_DONE)
+		if (!sqlite_run (o->mark, "l", id))
 			return 0;
 
 	return id == 0;
@@ -270,8 +268,7 @@ long yonk_add (struct yonk *o, long parent, long link, const char *label,
 			  "VALUES (?, ?, ?, ?, ?)";
 
 	if (!sqlite_compile (o->db, req, &o->add) ||
-	    !sqlite_bind (o->add, "llsii", parent, link, label, kind, secure) ||
-	    sqlite3_step (o->add) != SQLITE_DONE)
+	    !sqlite_run (o->add, "llsii", parent, link, label, kind, secure))
 		return 0;
 
 	if (!yonk_mark (o, parent))
@@ -298,13 +295,11 @@ static int yonk_delete_tree (struct yonk *o, long id)
 	free (list);
 
 	if (!sqlite_compile (o->db, req_u, &o->del_u) ||
-	    !sqlite_bind (o->del_u, "l", id) ||
-	    sqlite3_step (o->del_u) != SQLITE_DONE)
+	    !sqlite_run (o->del_u, "l", id))
 		return 0;
 
 	if (!sqlite_compile (o->db, req_d, &o->del_d) ||
-	    !sqlite_bind (o->del_d, "l", id) ||
-	    sqlite3_step (o->del_d) != SQLITE_DONE)
+	    !sqlite_run (o->del_d, "l", id))
 		return 0;
 
 	return 1;
@@ -337,11 +332,11 @@ int yonk_commit (struct yonk *o)
 	const char *req_u = "UPDATE tree SET active = 1, dirty = 0, changed = 0";
 
 	if (!sqlite_compile (o->db, req_d, &o->comm_d) ||
-	    sqlite3_step  (o->comm_d) != SQLITE_DONE)
+	    !sqlite_run (o->comm_d, ""))
 		return 0;
 
 	if (!sqlite_compile (o->db, req_u, &o->comm_u) ||
-	    sqlite3_step  (o->comm_u) != SQLITE_DONE)
+	    !sqlite_run (o->comm_u, ""))
 		return 0;
 
 	return 1;
@@ -353,11 +348,11 @@ int yonk_discard (struct yonk *o)
 	const char *req_u = "UPDATE tree SET dirty = 0, changed = 0";
 
 	if (!sqlite_compile (o->db, req_d, &o->dis_d) ||
-	    sqlite3_step  (o->dis_d) != SQLITE_DONE)
+	    !sqlite_run (o->dis_d, ""))
 		return 0;
 
 	if (!sqlite_compile (o->db, req_u, &o->dis_u) ||
-	    sqlite3_step  (o->dis_u) != SQLITE_DONE)
+	    !sqlite_run (o->dis_u, ""))
 		return 0;
 
 	return 1;
