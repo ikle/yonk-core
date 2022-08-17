@@ -8,8 +8,9 @@
 
 #include <stdlib.h>
 
-#include <sqlite3.h>
 #include <yonk/core.h>
+
+#include "sqlite-hli.h"
 
 struct yonk {
 	sqlite3 *db;
@@ -100,11 +101,7 @@ struct yonk_node *yonk_get (struct yonk *o, long id)
 	const char *req = "SELECT * FROM tree WHERE id = ?";
 	struct yonk_node *n = &o->node;
 
-	if (o->get == NULL &&
-	    sqlite3_prepare_v2 (o->db, req, -1, &o->get, NULL) != 0)
-		return NULL;
-
-	if (sqlite3_reset (o->get) != 0 ||
+	if (!sqlite_compile (o->db, req, &o->get) ||
 	    sqlite3_bind_int64 (o->get, 1, id) != 0 ||
 	    sqlite3_step (o->get) != SQLITE_ROW)
 		return NULL;
@@ -125,11 +122,7 @@ long yonk_get_parent (struct yonk *o, long id)
 {
 	const char *req = "SELECT parent FROM tree WHERE id = ?";
 
-	if (o->parent == NULL &&
-	    sqlite3_prepare_v2 (o->db, req, -1, &o->parent, NULL) != 0)
-		return 0;
-
-	if (sqlite3_reset (o->parent) != 0 ||
+	if (!sqlite_compile (o->db, req, &o->parent) ||
 	    sqlite3_bind_int64 (o->parent, 1, id) != 0 ||
 	    sqlite3_step (o->parent) != SQLITE_ROW)
 		return 0;
@@ -145,18 +138,15 @@ long yonk_lookup (struct yonk *o, long parent, const char *label, int active)
 			    " AND NOT (active = 1 AND dirty = 1)";
 	sqlite3_stmt *s;
 
-	if (active && o->lookup_w == NULL &&
-	    sqlite3_prepare_v2 (o->db, req_w, -1, &o->lookup_w, NULL) != 0)
+	if (active && !sqlite_compile (o->db, req_w, &o->lookup_w))
 		return 0;
 
-	if (!active && o->lookup_n == NULL &&
-	    sqlite3_prepare_v2 (o->db, req_n, -1, &o->lookup_n, NULL) != 0)
+	if (!active && !sqlite_compile (o->db, req_n, &o->lookup_n))
 		return 0;
 
 	s = active ? o->lookup_w : o->lookup_n;
 
-	if (sqlite3_reset (s) != 0 ||
-	    sqlite3_bind_int64 (s, 1, parent) != 0 ||
+	if (sqlite3_bind_int64 (s, 1, parent) != 0 ||
 	    sqlite3_bind_text  (s, 2, label, -1, NULL) != 0 ||
 	    sqlite3_step (s) != SQLITE_ROW)
 		return 0;
@@ -173,22 +163,12 @@ long *yonk_childs (struct yonk *o, long parent, int sorted)
 	sqlite3_stmt *s;
 	long count, *list, i;
 
-	if (o->nchilds == NULL &&
-	    sqlite3_prepare_v2 (o->db, req_n, -1, &o->nchilds, NULL) != 0)
-		return NULL;
-
-	if (!sorted && o->childs == NULL &&
-	    sqlite3_prepare_v2 (o->db, req_u, -1, &o->childs, NULL) != 0)
-		return NULL;
-
-	if (sorted && o->childs_s == NULL &&
-	    sqlite3_prepare_v2 (o->db, req_s, -1, &o->childs_s, NULL) != 0)
+	if (!sqlite_compile (o->db, req_n, &o->nchilds))
 		return NULL;
 
 	s = o->nchilds;
 
-	if (sqlite3_reset (s) != 0 ||
-	    sqlite3_bind_int64 (s, 1, parent) != 0 ||
+	if (sqlite3_bind_int64 (s, 1, parent) != 0 ||
 	    sqlite3_step (s) != SQLITE_ROW)
 		return NULL;
 
@@ -198,10 +178,15 @@ long *yonk_childs (struct yonk *o, long parent, int sorted)
 	    (list = malloc (sizeof (list[0]) * (count + 1))) == NULL)
 		return NULL;
 
+	if (!sorted && !sqlite_compile (o->db, req_u, &o->childs))
+		return NULL;
+
+	if (sorted && !sqlite_compile (o->db, req_s, &o->childs_s))
+		return NULL;
+
 	s = sorted ? o->childs_s : o->childs;
 
-	if (sqlite3_reset (s) != 0 ||
-	    sqlite3_bind_int64 (s, 1, parent) != 0)
+	if (sqlite3_bind_int64 (s, 1, parent) != 0)
 		return NULL;
 
 	for (i = 0; i < count; ++i)
@@ -224,18 +209,12 @@ long *yonk_slaves (struct yonk *o, long id)
 	sqlite3_stmt *s;
 	long count, *list, i;
 
-	if (o->nslaves == NULL &&
-	    sqlite3_prepare_v2 (o->db, req_n, -1, &o->nslaves, NULL) != 0)
-		return NULL;
-
-	if (o->slaves == NULL &&
-	    sqlite3_prepare_v2 (o->db, req_u, -1, &o->slaves, NULL) != 0)
+	if (!sqlite_compile (o->db, req_n, &o->nslaves))
 		return NULL;
 
 	s = o->nslaves;
 
-	if (sqlite3_reset (s) != 0 ||
-	    sqlite3_bind_int64 (s, 1, id) != 0 ||
+	if (sqlite3_bind_int64 (s, 1, id) != 0 ||
 	    sqlite3_step (s) != SQLITE_ROW)
 		return NULL;
 
@@ -245,10 +224,12 @@ long *yonk_slaves (struct yonk *o, long id)
 	    (list = malloc (sizeof (list[0]) * (count + 1))) == NULL)
 		return NULL;
 
+	if (!sqlite_compile (o->db, req_u, &o->slaves))
+		return NULL;
+
 	s = o->slaves;
 
-	if (sqlite3_reset (s) != 0 ||
-	    sqlite3_bind_int64 (s, 1, id) != 0)
+	if (sqlite3_bind_int64 (s, 1, id) != 0)
 		return NULL;
 
 	for (i = 0; i < count; ++i)
@@ -270,8 +251,7 @@ static int yonk_mark (struct yonk *o, long id)
 {
 	const char *req = "UPDATE tree SET changed = 1 WHERE id = ?";
 
-	if (o->mark == NULL &&
-	    sqlite3_prepare_v2 (o->db, req, -1, &o->mark, NULL) != 0)
+	if (!sqlite_compile(o->db, req, &o->mark))
 		return 0;
 
 	for (; id > 0; id = yonk_get_parent (o, id))
@@ -290,11 +270,7 @@ long yonk_add (struct yonk *o, long parent, long link, const char *label,
 			  "INTO tree (parent, link, label, kind, secure) "
 			  "VALUES (?, ?, ?, ?, ?)";
 
-	if (o->add == NULL &&
-	    sqlite3_prepare_v2 (o->db, req, -1, &o->add, NULL) != 0)
-		return 0;
-
-	if (sqlite3_reset (o->add) != 0 ||
+	if (!sqlite_compile (o->db, req, &o->add) ||
 	    sqlite3_bind_int64 (o->add, 1, parent)          != 0 ||
 	    sqlite3_bind_int64 (o->add, 2, link)            != 0 ||
 	    sqlite3_bind_text  (o->add, 3, label, -1, NULL) != 0 ||
@@ -317,14 +293,6 @@ static int yonk_delete_tree (struct yonk *o, long id)
 			    "AND active = 0 AND dirty = 1";
 	long *list, i;
 
-	if (o->del_u == NULL &&
-	    sqlite3_prepare_v2 (o->db, req_u, -1, &o->del_u, NULL) != 0)
-		return 0;
-
-	if (o->del_d == NULL &&
-	    sqlite3_prepare_v2 (o->db, req_d, -1, &o->del_d, NULL) != 0)
-		return 0;
-
 	if ((list = yonk_childs (o, id, 0)) == NULL)
 		return 0;
 
@@ -334,12 +302,12 @@ static int yonk_delete_tree (struct yonk *o, long id)
 
 	free (list);
 
-	if (sqlite3_reset (o->del_u) != 0 ||
+	if (!sqlite_compile (o->db, req_u, &o->del_u) ||
 	    sqlite3_bind_int64 (o->del_u, 1, id) != 0 ||
 	    sqlite3_step (o->del_u) != SQLITE_DONE)
 		return 0;
 
-	if (sqlite3_reset (o->del_d) != 0 ||
+	if (!sqlite_compile (o->db, req_d, &o->del_d) ||
 	    sqlite3_bind_int64 (o->del_d, 1, id) != 0 ||
 	    sqlite3_step (o->del_d) != SQLITE_DONE)
 		return 0;
@@ -373,19 +341,11 @@ int yonk_commit (struct yonk *o)
 	const char *req_d = "DELETE FROM tree WHERE active = 1 AND dirty = 1";
 	const char *req_u = "UPDATE tree SET active = 1, dirty = 0, changed = 0";
 
-	if (o->comm_d == NULL &&
-	    sqlite3_prepare_v2 (o->db, req_d, -1, &o->comm_d, NULL) != 0)
-		return 0;
-
-	if (o->comm_u == NULL &&
-	    sqlite3_prepare_v2 (o->db, req_u, -1, &o->comm_u, NULL) != 0)
-		return 0;
-
-	if (sqlite3_reset (o->comm_d) != 0 ||
+	if (!sqlite_compile (o->db, req_d, &o->comm_d) ||
 	    sqlite3_step  (o->comm_d) != SQLITE_DONE)
 		return 0;
 
-	if (sqlite3_reset (o->comm_u) != 0 ||
+	if (!sqlite_compile (o->db, req_u, &o->comm_u) ||
 	    sqlite3_step  (o->comm_u) != SQLITE_DONE)
 		return 0;
 
@@ -397,19 +357,11 @@ int yonk_discard (struct yonk *o)
 	const char *req_d = "DELETE FROM tree WHERE active = 0 AND dirty = 1";
 	const char *req_u = "UPDATE tree SET dirty = 0, changed = 0";
 
-	if (o->dis_d == NULL &&
-	    sqlite3_prepare_v2 (o->db, req_d, -1, &o->dis_d, NULL) != 0)
-		return 0;
-
-	if (o->dis_u == NULL &&
-	    sqlite3_prepare_v2 (o->db, req_u, -1, &o->dis_u, NULL) != 0)
-		return 0;
-
-	if (sqlite3_reset (o->dis_d) != 0 ||
+	if (!sqlite_compile (o->db, req_d, &o->dis_d) ||
 	    sqlite3_step  (o->dis_d) != SQLITE_DONE)
 		return 0;
 
-	if (sqlite3_reset (o->dis_u) != 0 ||
+	if (!sqlite_compile (o->db, req_u, &o->dis_u) ||
 	    sqlite3_step  (o->dis_u) != SQLITE_DONE)
 		return 0;
 
