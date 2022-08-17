@@ -239,8 +239,6 @@ no_fetch:
 	return NULL;
 }
 
-/* modify */
-
 static int yonk_mark (struct yonk *o, long id)
 {
 	const char *req = "UPDATE tree SET changed = 1 WHERE id = ?";
