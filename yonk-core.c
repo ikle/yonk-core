@@ -21,6 +21,25 @@ struct yonk {
 	sqlite3_stmt *comm_d, *comm_u, *dis_d, *dis_u;
 };
 
+static const char *init_req =
+	"CREATE TABLE IF NOT EXISTS tree ("
+	"	id	INTEGER PRIMARY KEY,"
+	"	parent	INTEGER NOT NULL,"
+	"	link	INTEGER NOT NULL DEFAULT 0,"
+	"	label	TEXT    NOT NULL,"
+	"	kind	INTEGER NOT NULL,"
+	"	secure	BOOLEAN NOT NULL DEFAULT 0," /* secure key */
+
+	"	active	BOOLEAN NOT NULL DEFAULT 0," /* committed */
+	"	dirty	BOOLEAN NOT NULL DEFAULT 1," /* will be added/deleted */
+	"	changed	BOOLEAN NOT NULL DEFAULT 1," /* validate requred */
+
+	"	UNIQUE (parent, label)"
+	");"
+
+	"CREATE INDEX IF NOT EXISTS \"tree-parent\" ON tree (parent);"
+	"CREATE INDEX IF NOT EXISTS \"tree-link\"   ON tree (link)";
+
 struct yonk *yonk_alloc (const char *path, const char *mode)
 {
 	struct yonk *o;
@@ -43,11 +62,16 @@ struct yonk *yonk_alloc (const char *path, const char *mode)
 	if (sqlite3_open_v2 (path, &o->db, flags, NULL) != 0)
 		goto no_db;
 
+	if (sqlite3_exec (o->db, init_req, NULL, NULL, NULL) != 0)
+		goto no_init;
+
 	o->lookup_n = o->lookup_w = o->parent = o->get = NULL;
 	o->slaves = o->nslaves = o->childs_s = o->childs = o->nchilds = NULL;
 	o->del_d = o->del_u = o->add = o->mark = NULL;
 	o->dis_u = o->dis_d = o->comm_u = o->comm_d = NULL;
 	return o;
+no_init:
+	sqlite3_close_v2 (o->db);
 no_db:
 	free (o);
 	return NULL;
