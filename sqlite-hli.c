@@ -12,10 +12,7 @@
 
 int sqlite_compile (sqlite3 *o, const char *req, sqlite3_stmt **s)
 {
-	if (*s == NULL && sqlite3_prepare_v2 (o, req, -1, s, NULL) != 0)
-		return 0;
-
-	return sqlite3_reset (*s) == 0;
+	return *s != NULL || sqlite3_prepare_v2 (o, req, -1, s, NULL) == 0;
 }
 
 int sqlite_bind_va (sqlite3_stmt *s, const char *fmt, va_list ap)
