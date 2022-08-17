@@ -102,8 +102,7 @@ struct yonk_node *yonk_get (struct yonk *o, long id)
 	struct yonk_node *n = &o->node;
 
 	if (!sqlite_compile (o->db, req, &o->get) ||
-	    !sqlite_bind (o->get, "l", id) ||
-	    sqlite3_step (o->get) != SQLITE_ROW)
+	    !sqlite_first (o->get, "l", id))
 		return NULL;
 
 	n->parent  = sqlite3_column_int64 (o->get, 1);
@@ -123,8 +122,7 @@ long yonk_get_parent (struct yonk *o, long id)
 	const char *req = "SELECT parent FROM tree WHERE id = ?";
 
 	if (!sqlite_compile (o->db, req, &o->parent) ||
-	    !sqlite_bind (o->parent, "l", id) ||
-	    sqlite3_step (o->parent) != SQLITE_ROW)
+	    !sqlite_first (o->parent, "l", id))
 		return 0;
 
 	return sqlite3_column_int64 (o->parent, 1);
@@ -146,8 +144,7 @@ long yonk_lookup (struct yonk *o, long parent, const char *label, int active)
 
 	s = active ? o->lookup_w : o->lookup_n;
 
-	if (!sqlite_bind (s, "ls", parent, label) ||
-	    sqlite3_step (s) != SQLITE_ROW)
+	if (!sqlite_first (s, "ls", parent, label))
 		return 0;
 
 	return sqlite3_column_int64 (s, 1);
@@ -167,8 +164,7 @@ long *yonk_childs (struct yonk *o, long parent, int sorted)
 
 	s = o->nchilds;
 
-	if (!sqlite_bind (s, "l", parent) ||
-	    sqlite3_step (s) != SQLITE_ROW)
+	if (!sqlite_first (s, "l", parent))
 		return NULL;
 
 	count = sqlite3_column_int64 (s, 1);
@@ -189,7 +185,7 @@ long *yonk_childs (struct yonk *o, long parent, int sorted)
 		return NULL;
 
 	for (i = 0; i < count; ++i)
-		if (sqlite3_step (s) != SQLITE_ROW)
+		if (!sqlite_next (s))
 			goto no_fetch;
 		else
 			list[i] = sqlite3_column_int64 (s, 1);
@@ -213,8 +209,7 @@ long *yonk_slaves (struct yonk *o, long id)
 
 	s = o->nslaves;
 
-	if (!sqlite_bind (s, "l", id) ||
-	    sqlite3_step (s) != SQLITE_ROW)
+	if (!sqlite_first (s, "l", id))
 		return NULL;
 
 	count = sqlite3_column_int64 (s, 1);
@@ -232,7 +227,7 @@ long *yonk_slaves (struct yonk *o, long id)
 		return NULL;
 
 	for (i = 0; i < count; ++i)
-		if (sqlite3_step (s) != SQLITE_ROW)
+		if (!sqlite_next (s))
 			goto no_fetch;
 		else
 			list[i] = sqlite3_column_int64 (s, 1);
