@@ -8,12 +8,14 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 #include <yonk/core.h>
 
 int main (int argc, char *argv[])
 {
 	struct yonk *o;
+	clock_t ts;
 	long i, j, k, *v;
 	struct yonk_node *n;
 
@@ -21,6 +23,8 @@ int main (int argc, char *argv[])
 		fprintf (stderr, "E: cannot connect to database\n");
 		return 1;
 	}
+
+	ts = clock ();
 
 	yonk_discard (o);
 
@@ -49,6 +53,11 @@ int main (int argc, char *argv[])
 
 	yonk_commit (o);
 	yonk_delete (o, j);
+
+	ts = clock () - ts;
+
+	printf ("I: requests completed in %.3f ms\n",
+		ts * (1000.0 / CLOCKS_PER_SEC));
 
 	yonk_free (o);
 	return 0;
