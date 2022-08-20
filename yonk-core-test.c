@@ -54,8 +54,8 @@ int main (int argc, char *argv[])
 	yonk_commit (o);
 	yonk_delete (o, a);
 
-	a = yonk_add (o, t, 0, "speed",	YONK_ATTR,  0);
-	i = yonk_add (o, a, 0, "1000",	YONK_VALUE, 0);
+	a = yonk_add (o, t, 0, "description",	YONK_ATTR,  0);
+	i = yonk_add (o, a, 0, "Cool link",	YONK_VALUE, 0);
 
 	ts = clock () - ts;
 

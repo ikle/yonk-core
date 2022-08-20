@@ -25,6 +25,28 @@ static void indent (int state, int level, FILE *to)
 		fprintf (to, "    ");
 }
 
+static void show_label (const char *key, const char *label, int leaf, FILE *to)
+{
+	size_t i = strcspn (label, " \"\\");
+
+	if (key != NULL)
+		fprintf (to, "%s ", key);
+
+	if (label[i] == '\0')
+		fprintf (to, "%s", label);
+	else {
+		fputc ('"', to);
+
+		for (i = 0; label[i] != '\0'; fputc (label[i], to), ++i)
+			if (label[i] == '"' || label[i] == '\\')
+				fputc ('\\', to);
+
+		fputc ('"', to);
+	}
+
+	fprintf (to, leaf ? "\n" : " {\n");
+}
+
 static int
 yonk_list_attrs (struct yonk *o, int level, long attr, const char *name, FILE *to)
 {
@@ -39,7 +61,7 @@ yonk_list_attrs (struct yonk *o, int level, long attr, const char *name, FILE *t
 			continue;
 
 		indent (get_state (n), level, to);
-		fprintf (to, "%s %s\n", name, n->label);
+		show_label (name, n->label, 1, to);
 	}
 
 	free (v);
@@ -61,7 +83,7 @@ yonk_list_nodes (struct yonk *o, int level, long node, const char *name, FILE *t
 			continue;
 
 		indent (s = get_state (n), level, to);
-		fprintf (to, "%s %s {\n", name, n->label);
+		show_label (name, n->label, 0, to);
 		yonk_list (o, level + 1, v[i], to);
 		indent (s, level, to);
 		fprintf (to, "}\n");
@@ -88,7 +110,7 @@ int yonk_list (struct yonk *o, int level, long parent, FILE *to)
 		switch (n->kind) {
 		case YONK_GROUP:
 			indent (s = get_state (n), level, to);
-			fprintf (to, "%s {\n", n->label);
+			show_label (NULL, n->label, 0, to);
 			yonk_list (o, level + 1, v[i], to);
 			indent (s, level, to);
 			fprintf (to, "}\n");
