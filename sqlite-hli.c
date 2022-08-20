@@ -29,18 +29,24 @@ int sqlite_bind_va (sqlite3_stmt *s, const char *fmt, va_list ap)
 
 				if (sqlite3_bind_int (s, i, x) != 0)
 					return 0;
+
+				break;
 			}
 		case 'l': {
 				long x = va_arg (ap, long);
 
 				if (sqlite3_bind_int64 (s, i, x) != 0)
 					return 0;
+
+				break;
 			}
 		case 's': {
 				const char *x = va_arg (ap, const char *);
 
 				if (sqlite3_bind_text (s, i, x, -1, NULL) != 0)
 					return 0;
+
+				break;
 			}
 		}
 
