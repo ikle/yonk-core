@@ -16,7 +16,7 @@ int main (int argc, char *argv[])
 {
 	struct yonk *o;
 	clock_t ts;
-	long i, j, k, *v;
+	long i, k, t, a, *v;
 	struct yonk_node *n;
 
 	if ((o = yonk_alloc ("yonk-core.db", "w")) == NULL) {
@@ -30,16 +30,16 @@ int main (int argc, char *argv[])
 
 	i = yonk_add (o, 0, 0, "interfaces",	YONK_GROUP, 0);
 	i = yonk_add (o, i, 0, "ethernet",	YONK_NODE,  0);
-	i = yonk_add (o, i, 0, "eth1",		YONK_TAG,   0);
-	j = yonk_add (o, i, 0, "address",	YONK_ATTR,  0);
-	i = yonk_add (o, j, 0, "10.0.26.2/24",	YONK_VALUE, 0);
-	k = yonk_add (o, j, 0, "10.0.27.2/24",	YONK_VALUE, 0);
-	i = yonk_add (o, j, 0, "10.0.28.2/24",	YONK_VALUE, 0);
-	i = yonk_add (o, j, 0, "10.0.24.2/24",	YONK_VALUE, 0);
+	t = yonk_add (o, i, 0, "eth1",		YONK_TAG,   0);
+	a = yonk_add (o, t, 0, "address",	YONK_ATTR,  0);
+	i = yonk_add (o, a, 0, "10.0.26.2/24",	YONK_VALUE, 0);
+	k = yonk_add (o, a, 0, "10.0.27.2/24",	YONK_VALUE, 0);
+	i = yonk_add (o, a, 0, "10.0.28.2/24",	YONK_VALUE, 0);
+	i = yonk_add (o, a, 0, "10.0.24.2/24",	YONK_VALUE, 0);
 
 	yonk_delete (o, k);
 
-	if ((v = yonk_childs (o, j, 1)) != NULL)
+	if ((v = yonk_childs (o, a, 1)) != NULL)
 		for (i = 0; v[i] > 0; ++i) {
 			printf ("address value (%ld) = ", v[i]);
 
@@ -52,7 +52,10 @@ int main (int argc, char *argv[])
 	free (v);
 
 	yonk_commit (o);
-	yonk_delete (o, j);
+	yonk_delete (o, a);
+
+	a = yonk_add (o, t, 0, "speed",	YONK_ATTR,  0);
+	i = yonk_add (o, a, 0, "1000",	YONK_VALUE, 0);
 
 	ts = clock () - ts;
 
