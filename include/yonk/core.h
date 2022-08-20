@@ -47,6 +47,8 @@ int yonk_discard (struct yonk *o);
 
 /* path */
 
+int yonk_list (struct yonk *o, int level, long parent, FILE *to);
+
 typedef int yonk_node_cb (struct yonk_node *n, void *cookie);
 
 int yonk_iterate_path (struct yonk *o, long id, yonk_node_cb cb, void *cookie);
