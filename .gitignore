@@ -4,6 +4,7 @@
 *.pc
 *.swp
 *-test
+*.db
 
 sysroot
 
