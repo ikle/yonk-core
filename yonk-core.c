@@ -133,7 +133,7 @@ long yonk_get_parent (struct yonk *o, long id)
 	    !sqlite_first (o->parent, "l", id))
 		return 0;
 
-	return sqlite3_column_int64 (o->parent, 1);
+	return sqlite3_column_int64 (o->parent, 0);
 }
 
 long yonk_lookup (struct yonk *o, long parent, const char *label)
@@ -144,7 +144,7 @@ long yonk_lookup (struct yonk *o, long parent, const char *label)
 	    !sqlite_first (o->lookup, "ls", parent, label))
 		return 0;
 
-	return sqlite3_column_int64 (o->lookup, 1);
+	return sqlite3_column_int64 (o->lookup, 0);
 }
 
 long *yonk_childs (struct yonk *o, long parent, int sorted)
@@ -158,7 +158,7 @@ long *yonk_childs (struct yonk *o, long parent, int sorted)
 
 	if (!sqlite_compile (o->db, req_n, &o->nchilds) ||
 	    !sqlite_first (o->nchilds, "l", parent) ||
-	    (count = sqlite3_column_int64 (o->nchilds, 1)) < 0 ||
+	    (count = sqlite3_column_int64 (o->nchilds, 0)) < 0 ||
 	    (list = malloc (sizeof (list[0]) * (count + 1))) == NULL)
 		return NULL;
 
@@ -173,7 +173,7 @@ long *yonk_childs (struct yonk *o, long parent, int sorted)
 	if (!sqlite_bind (s, "l", parent))
 		goto no_fetch;
 
-	for (i = 0; i < count; list[i++] = sqlite3_column_int64 (s, 1))
+	for (i = 0; i < count; list[i++] = sqlite3_column_int64 (s, 0))
 		if (!sqlite_next (s))
 			goto no_fetch;
 
@@ -192,7 +192,7 @@ long *yonk_slaves (struct yonk *o, long id)
 
 	if (!sqlite_compile (o->db, req_n, &o->nslaves) ||
 	    !sqlite_first (o->nslaves, "l", id) ||
-	    (count = sqlite3_column_int64 (o->nslaves, 1)) < 0 ||
+	    (count = sqlite3_column_int64 (o->nslaves, 0)) < 0 ||
 	    (list = malloc (sizeof (list[0]) * (count + 1))) == NULL)
 		return NULL;
 
@@ -200,7 +200,7 @@ long *yonk_slaves (struct yonk *o, long id)
 	    !sqlite_bind (o->slaves, "l", id))
 		goto no_fetch;
 
-	for (i = 0; i < count; list[i++] = sqlite3_column_int64 (o->slaves, 1))
+	for (i = 0; i < count; list[i++] = sqlite3_column_int64 (o->slaves, 0))
 		if (!sqlite_next (o->slaves))
 			goto no_fetch;
 
