@@ -14,7 +14,7 @@ int main (int argc, char *argv[])
 {
 	struct yonk *o;
 
-	if ((o = yonk_alloc ("yonk-core.db", "w")) == NULL) {
+	if ((o = yonk_alloc ("yonk-core.db", "r")) == NULL) {
 		fprintf (stderr, "E: cannot connect to database\n");
 		return 1;
 	}
