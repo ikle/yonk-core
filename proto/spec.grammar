@@ -1,0 +1,35 @@
+token
+	.	= /[ \t]+/			# skip spaces
+	.	= /#[^\n]*/			# skip comments
+
+	number	= /0|[1-9][0-9]*/
+	name	= /[a-z](-?[0-9a-z])*/
+	string	= /"([^"\\]|(\\["\\]))*"/
+	eol	= /\n+/				# and skip empty lines
+
+	colon	= ":"
+	open	= "{"
+	close	= "}"
+	eq	= "="
+	star	= "*"
+
+grammar
+	spec	= childs
+
+	group	= "group" name           ":" string ["{" eol childs "}"] eol
+	nodes	= "nodes" name           ":" string ["{" eol nspec  "}"] eol
+	node	= "node"  name ["=" tag] ":" string ["{" eol nspec  "}"] eol
+	attrs	= "attrs" name           ":" string ["{" eol limit  "}"] eol
+	attr	= "attr"  name ["=" tag] ":" string ["{" eol limit  "}"] eol
+
+	tag	= name | number | string
+
+	childs  = (group | nodes | node | attrs | attr)*
+	nspec	= limit class* childs
+	limit	= value* type* ref?
+
+	value	= "value" tag ":" string eol
+	type	= "type" "is" name (name tag)* eol
+	ref	= "ref" (name | "*")+ eol
+	class	= "class" name eol
+

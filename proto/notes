@@ -1,0 +1,28 @@
+#!/bin/sh
+
+ROOT=$(dirname $0)
+
+show_spec () {
+	local T="$1"
+	local N="$2"
+
+	echo "# $T $N"
+	echo
+	cat "$ROOT/$T/$N.spec" 2> /dev/zero
+	echo
+}
+
+show_spec conf	link-ethernet
+show_spec class	link-base
+show_spec class	link-ethernet-device
+show_spec class	link-ethernet
+show_spec class	link-inet
+
+show_spec conf	link-bonding
+show_spec class	link-bonding
+show_spec class	link-bonding-port
+
+show_spec conf	link-bridge
+show_spec class	link-bridge
+show_spec class	link-bridge-port
+
