@@ -16,20 +16,20 @@ token
 grammar
 	spec	= childs
 
-	group	= "group" name           ":" string ["{" eol childs "}"] eol
-	nodes	= "nodes" name           ":" string ["{" eol nspec  "}"] eol
-	node	= "node"  name ["=" tag] ":" string ["{" eol nspec  "}"] eol
-	attrs	= "attrs" name           ":" string ["{" eol limit  "}"] eol
-	attr	= "attr"  name ["=" tag] ":" string ["{" eol limit  "}"] eol
+	group	= "group" name             ":" string ["{" eol childs "}"] eol
+	nodes	= "nodes" name             ":" string ["{" eol nspec  "}"] eol
+	node	= "node"  name ["=" const] ":" string ["{" eol nspec  "}"] eol
+	attrs	= "attrs" name             ":" string ["{" eol limit  "}"] eol
+	attr	= "attr"  name ["=" const] ":" string ["{" eol limit  "}"] eol
 
-	tag	= name | number | string
+	const	= name | number | string
 
 	childs  = (group | nodes | node | attrs | attr)*
 	nspec	= limit class* childs
 	limit	= value* type* ref?
 
-	value	= "value" tag ":" string eol
-	type	= "type" "is" name (name tag)* eol
+	value	= "value" const ":" string eol
+	type	= "type" "is" name (name const)* eol
 	ref	= "ref" (name | "*")+ eol
 	class	= "class" name eol
 
