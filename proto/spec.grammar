@@ -14,9 +14,9 @@ token
 	star	= "*"
 
 grammar
-	spec	= child*
+	spec	= child+
 
-	group	= "group" name             ":" string ["{" eol child* "}"] eol
+	group	= "group" name             ":" string ["{" eol child+ "}"] eol
 	nodes	= "nodes" name             ":" string ["{" eol nspec  "}"] eol
 	node	= "node"  name ["=" const] ":" string ["{" eol nspec  "}"] eol
 	attrs	= "attrs" name             ":" string ["{" eol limit  "}"] eol
@@ -25,7 +25,7 @@ grammar
 	const	= name | number | string
 
 	child	= group | nodes | node | attrs | attr
-	nspec	= limit class* child*
+	nspec	= limit class* child+
 	limit	= value* type* ref?
 
 	value	= "value" const ":" string eol
