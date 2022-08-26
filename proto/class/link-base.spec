@@ -1,4 +1,4 @@
-attr description : "Описание интерфейса" {}
+attr description : "Описание интерфейса"
 
 attr mtu = 1500 : "Mаксимальный размер передаваемого блока данных" {
 	type is number from 68 to 9000
