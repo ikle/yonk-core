@@ -1,4 +1,5 @@
 node bridge : "Сетевой мост" {
+	type is name re "^br"
 	ref interfaces bridge *
 
 	attr cost : "Стоимость маршрута для данного порта" {
