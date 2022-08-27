@@ -11,6 +11,7 @@ token
 	open	= "{"
 	close	= "}"
 	eq	= "="
+	comma	= ","
 	star	= "*"
 
 grammar
@@ -26,12 +27,12 @@ grammar
 
 	child	= group | nodes | node | attrs | attr
 	nspec	= limit class* child+
-	limit	= value* (num | match)? type* ref?
+	limit	= value* (num | match | type)? ref?
 
 	value	= "value" const ":" string eol
 	num	= "number" "from" number "to" number eol
 	match	= "match" "name" [string] eol
-	type	= "type" "is" name (name const)* eol
+	type	= "type" "is" name ("," name)* eol
 	ref	= "ref" (name | "*")+ eol
 	class	= "class" name eol
 
