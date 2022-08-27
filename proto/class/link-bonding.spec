@@ -22,6 +22,6 @@ attr lacp-rate = slow : "Частота LACP запросов" {
 }
 
 attr primary : "Главное устройство" {
-	type is name re "^eth"
+	match name "^eth"
 	ref interfaces ethernet *  # must be part of this bonding group
 }

@@ -1,6 +1,6 @@
 group interfaces {
 	nodes bonding : "Агрегированный интерфейс" {
-		type name re "^bond"
+		match name "^bond"
 		class link-base
 		class link-bonding
 		class link-ethernet
