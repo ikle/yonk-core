@@ -3,7 +3,7 @@ attr mac : "MAC адрес" {
 }
 
 nodes vlan : "Идентификатор виртуальной сети" {
-	type is number from 1 to 4094
+	number from 1 to 4094
 	class link-base
 	class link-inet
 }

@@ -26,9 +26,10 @@ grammar
 
 	child	= group | nodes | node | attrs | attr
 	nspec	= limit class* child+
-	limit	= value* type* ref?
+	limit	= value* num? type* ref?
 
 	value	= "value" const ":" string eol
+	num	= "number" "from" number "to" number eol
 	type	= "type" "is" name (name const)* eol
 	ref	= "ref" (name | "*")+ eol
 	class	= "class" name eol
