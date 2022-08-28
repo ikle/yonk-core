@@ -1,7 +1,7 @@
 group interfaces : "Интерфейсы" {
 	nodes bonding : "Агрегированный интерфейс" {
 		match name "^bond"
-		class link-base, link-bonding, link-ethernet
+		class link-base, link-bonding
 	}
 }
 
@@ -33,6 +33,8 @@ class class link-bonding {
 		match name "^eth"
 		ref interfaces ethernet *  # must be part of this bonding group
 	}
+
+	class link-ethernet
 }
 
 class class link-bonding-port {

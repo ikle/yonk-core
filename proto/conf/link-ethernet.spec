@@ -1,7 +1,7 @@
 group interfaces : "Интерфейсы" {
 	nodes ethernet : "Ethernet интерфейс" {
 		match name "^eth"
-		class link-base, link-ethernet-device, link-ethernet
+		class link-base, link-ethernet-device
 	}
 }
 
@@ -26,7 +26,7 @@ class link-ethernet-device {
 		value off : "Выключено"
 	}
 
-	class link-bonding-port
+	class link-bonding-port, link-ethernet
 }
 
 class link-ethernet {

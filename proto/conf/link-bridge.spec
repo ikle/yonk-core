@@ -1,7 +1,7 @@
 group interfaces : "Интерфейсы" {
 	nodes bridge : "Мостовой интерфейс" {
 		match name "^br"
-		class link-base, link-bridge, link-ethernet
+		class link-base, link-bridge
 	}
 }
 
@@ -26,6 +26,8 @@ class link-bridge {
 		value on  : "Включено"
 		value off : "Выключено"
 	}
+
+	class link-ethernet
 }
 
 class link-bridge-port {
