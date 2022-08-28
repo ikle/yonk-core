@@ -23,7 +23,5 @@ show_spec class	link-bonding
 show_spec class	link-bonding-port
 
 show_spec conf	link-bridge
-show_spec class	link-bridge
-show_spec class	link-bridge-port
 
 show_spec conf  service-ntp
