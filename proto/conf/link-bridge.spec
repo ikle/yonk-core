@@ -1,10 +1,7 @@
 group interfaces : "Интерфейсы" {
 	nodes bridge : "Мостовой интерфейс" {
 		match name "^br"
-		class link-base
-		class link-bridge
-		class link-ethernet
-		class link-inet
+		class link-base, link-bridge, link-ethernet, link-inet
 	}
 }
 

@@ -1,10 +1,7 @@
 group interfaces : "Интерфейсы" {
 	nodes ethernet : "Ethernet интерфейс" {
 		match name "^eth"
-		class link-base
-		class link-ethernet-device
-		class link-ethernet
-		class link-inet
+		class link-base, link-ethernet-device, link-ethernet, link-inet
 	}
 }
 
@@ -39,8 +36,7 @@ class link-ethernet {
 
 	nodes vlan : "Идентификатор виртуальной сети" {
 		number from 1 to 4094
-		class link-base
-		class link-inet
+		class link-base, link-inet
 	}
 
 	class link-bridge-port

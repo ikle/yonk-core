@@ -38,5 +38,5 @@ grammar
 	match	= "match" "name" [string] eol
 	type	= "type" "is" name ("," name)* eol
 	ref	= "ref" (name | "*")+ eol
-	cref	= "class" name eol
+	cref	= "class" name ("," name)* eol
 
