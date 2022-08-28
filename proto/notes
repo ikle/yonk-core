@@ -12,10 +12,8 @@ show_spec () {
 	echo
 }
 
+show_spec conf	link-base
 show_spec conf	link-ethernet
-show_spec class	link-base
-show_spec class	link-inet
-
 show_spec conf	link-bonding
 show_spec conf	link-bridge
 
