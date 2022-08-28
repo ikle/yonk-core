@@ -1,7 +1,7 @@
 group interfaces : "Интерфейсы" {
 	nodes bonding : "Агрегированный интерфейс" {
 		match name "^bond"
-		class link-base, link-bonding, link-ethernet, link-inet
+		class link-base, link-bonding, link-ethernet
 	}
 }
 
