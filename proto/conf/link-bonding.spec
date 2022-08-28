@@ -1,4 +1,4 @@
-group interfaces {
+group interfaces : "Интерфейсы" {
 	nodes bonding : "Агрегированный интерфейс" {
 		match name "^bond"
 		class link-base
