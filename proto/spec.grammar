@@ -25,7 +25,7 @@ grammar
 	attrs	= "attrs" name             ":" string ["{" eol limit  "}"] eol
 	attr	= "attr"  name ["=" const] ":" string ["{" eol limit  "}"] eol
 
-	observer = "observer" name const* eol
+	observer = "observer" name const? eol
 
 	const	= name | number | string
 
