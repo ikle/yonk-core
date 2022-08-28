@@ -19,9 +19,6 @@ show_spec class	link-ethernet
 show_spec class	link-inet
 
 show_spec conf	link-bonding
-show_spec class	link-bonding
-show_spec class	link-bonding-port
-
 show_spec conf	link-bridge
 
 show_spec conf  service-ntp
