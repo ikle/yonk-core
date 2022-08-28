@@ -15,7 +15,9 @@ token
 	star	= "*"
 
 grammar
-	spec	= child+
+	spec	= (child | class)+
+
+	class	= "class" name "{" eol child+ "}" eol
 
 	group	= "group" name             ":" string ["{" eol child+ "}"] eol
 	nodes	= "nodes" name             ":" string ["{" eol nspec  "}"] eol
