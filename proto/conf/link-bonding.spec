@@ -4,7 +4,6 @@ group interfaces : "Интерфейсы" {
 		class link-base
 		class link-bonding
 		class link-ethernet
-		class link-bridge-port
 		class link-inet
 	}
 }

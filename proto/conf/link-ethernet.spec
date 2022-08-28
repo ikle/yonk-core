@@ -4,8 +4,6 @@ group interfaces : "Интерфейсы" {
 		class link-base
 		class link-ethernet-device
 		class link-ethernet
-		class link-bonding-port
-		class link-bridge-port
 		class link-inet
 	}
 }
@@ -30,6 +28,8 @@ class link-ethernet-device {
 		value on  : "Включено"
 		value off : "Выключено"
 	}
+
+	class link-bonding-port
 }
 
 class link-ethernet {
@@ -42,4 +42,6 @@ class link-ethernet {
 		class link-base
 		class link-inet
 	}
+
+	class link-bridge-port
 }

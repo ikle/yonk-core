@@ -29,8 +29,8 @@ grammar
 
 	const	= name | number | string
 
-	child	= group | nodes | node | attrs | attr | observer
-	nspec	= limit class* child+
+	child	= group | nodes | node | attrs | attr | observer | class
+	nspec	= limit child+
 	limit	= value* (num | match | type)? ref?
 
 	value	= "value" const ":" string eol
