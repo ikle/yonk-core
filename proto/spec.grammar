@@ -24,11 +24,9 @@ grammar
 	attrs	= "attrs" name             ":" string ["{" eol limit  "}"] eol
 	attr	= "attr"  name ["=" const] ":" string ["{" eol limit  "}"] eol
 
-	observer = "observer" name const? eol
-
 	const	= name | number | string
 
-	child	= group | nodes | node | attrs | attr | observer | cref
+	child	= group | nodes | node | attrs | attr | cref
 	nspec	= limit child*
 	limit	= value* (num | match | type)? ref?
 

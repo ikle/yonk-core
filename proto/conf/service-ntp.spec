@@ -1,6 +1,6 @@
 group system : "Системные параметры" {
 	group ntp : "Настройка серверов NTP для получения времени" {
-		observer service-ntp system
+		class system-ntp
 
 		attrs server : "DNS имя или IP адрес сервера" {
 			type is idn, ip-address
@@ -15,7 +15,7 @@ group system : "Системные параметры" {
 
 group service : "Сервисы" {
 	group ntp : "Сервис NTP" {
-		observer service-ntp service
+		class service-ntp
 
 		attrs listen-on : "Адрес на котором принимаются запросы" {
 			type is ip-listen
