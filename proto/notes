@@ -14,8 +14,6 @@ show_spec () {
 
 show_spec conf	link-ethernet
 show_spec class	link-base
-show_spec class	link-ethernet-device
-show_spec class	link-ethernet
 show_spec class	link-inet
 
 show_spec conf	link-bonding
