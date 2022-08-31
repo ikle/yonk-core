@@ -8,6 +8,19 @@ class link-base {
 	attr link-detect = on : "Реагирование на изменение несущей"
 }
 
+class link-ethernet {
+	attr mac : "MAC адрес" {
+		type is macaddr
+	}
+
+	nodes vlan : "Идентификатор виртуальной сети" {
+		number from 1 to 4094
+		class link-base, link-inet
+	}
+
+	class link-inet
+}
+
 class link-inet {
 	attrs address : "IP адрес с маской сети" {
 		type is ip-masked

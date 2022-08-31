@@ -25,16 +25,3 @@ class link-ethernet-device {
 
 	class link-eapol, link-bonding-port, link-bridge-port, link-ethernet
 }
-
-class link-ethernet {
-	attr mac : "MAC адрес" {
-		type is macaddr
-	}
-
-	nodes vlan : "Идентификатор виртуальной сети" {
-		number from 1 to 4094
-		class link-base, link-inet
-	}
-
-	class link-inet
-}
