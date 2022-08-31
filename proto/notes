@@ -23,4 +23,5 @@ show_spec conf	link-supplicant
 
 show_spec conf  service-ntp
 
+show_spec conf  service-eapol
 show_spec conf  service-dhcp-relay
