@@ -34,7 +34,7 @@ class class link-bonding {
 		ref interfaces ethernet *  # must be part of this bonding group
 	}
 
-	class link-ethernet
+	class link-bridge-port, link-ethernet
 }
 
 class class link-bonding-port {
