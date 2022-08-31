@@ -5,10 +5,7 @@ class link-base {
 		number from 68 to 9000
 	}
 
-	attr link-detect = on : "Реагирование на изменение несущей" {
-		value on  : "Включено"
-		value off : "Выключено"
-	}
+	attr link-detect = on : "Реагирование на изменение несущей"
 }
 
 class link-inet {
@@ -16,10 +13,7 @@ class link-inet {
 		type is ip-masked
 	}
 
-	attr proxy-arp = off : "Проксирование ARP" {
-		value on  : "Включено"
-		value off : "Выключено"
-	}
+	attr proxy-arp = off : "Проксирование ARP"
 
 	class link-dhcp
 }

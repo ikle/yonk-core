@@ -21,10 +21,7 @@ class link-ethernet-device {
 		value full : "Полный дуплекс"
 	}
 
-	attr flow-control = on : "Управление потоком кадров Ethernet" {
-		value on  : "Включено"
-		value off : "Выключено"
-	}
+	attr flow-control = on : "Управление потоком кадров Ethernet"
 
 	class link-bonding-port, link-ethernet
 }

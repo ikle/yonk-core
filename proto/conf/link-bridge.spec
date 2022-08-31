@@ -22,10 +22,7 @@ class link-bridge {
 		number from 0 to 65535
 	}
 
-	attr stp = off : "Поддержка протокола STP" {
-		value on  : "Включено"
-		value off : "Выключено"
-	}
+	attr stp = off : "Поддержка протокола STP"
 
 	class link-ethernet
 }
