@@ -6,16 +6,20 @@ group policy : "Поилитики" {
 }
 
 class policy-dhcp {
-	attr default-route = on : "Принимать маршрут по-умолчанию"
-	attr dns-server    = on : "Принимать адрес DNS сервера"
-	attr host-name     = on : "Принимать имя узла"
-	attr domain-name   = on : "Принимать имя сети"
-	attr mtu           = on : "Принимать MTU интерфейса"
-	attr static-routes = on : "Принимать постоянные маршруты"
-	attr ntp-server    = on : "Принимать адрес NTP сервера"
-	attr smtp-server   = on : "Принимать адрес SMTP сервера"
-	attr pop3-server   = on : "Принимать адрес POP3 сервера"
-	attr irc-server    = on : "Принимать адрес IRC сервера"
+	attr default-route = on  : "Принимать маршрут по-умолчанию"
+	attr dns-server    = on  : "Принимать адрес DNS сервера"
+	attr host-name     = on  : "Принимать имя узла"
+	attr domain-name   = on  : "Принимать имя сети"
+	attr mtu           = off : "Принимать MTU интерфейса"
+	attr static-routes = on  : "Принимать постоянные маршруты"
+	attr ntp-server    = off : "Принимать адрес NTP сервера"
+	attr smtp-server   = off : "Принимать адрес SMTP сервера"
+	attr pop3-server   = off : "Принимать адрес POP3 сервера"
+	attr irc-server    = off : "Принимать адрес IRC сервера"
+
+	attr server : "Адрес сервера" {
+		type ipv4-address
+	}
 }
 
 class link-dhcp {
