@@ -6,7 +6,7 @@ group system : "Системные параметры" {
 			type is idn, ip-address
 		}
 
-		attr step-at-start = off : "Синхронизировать при старте"
+		attr sync-on-start = off : "Синхронизировать при старте"
 	}
 }
 
