@@ -6,7 +6,7 @@ group policy : "Поилитики" {
 }
 
 class policy-dhcp {
-	attr default-route = on  : "Принимать маршрут по-умолчанию"
+	attr gateway       = on  : "Принимать маршрут по-умолчанию"
 	attr dns-server    = on  : "Принимать адрес DNS сервера"
 	attr host-name     = on  : "Принимать имя узла"
 	attr domain-name   = on  : "Принимать имя сети"
