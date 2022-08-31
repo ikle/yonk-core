@@ -23,7 +23,7 @@ class link-ethernet-device {
 
 	attr flow-control = on : "Управление потоком кадров Ethernet"
 
-	class link-bonding-port, link-ethernet
+	class link-eapol, link-bonding-port, link-ethernet
 }
 
 class link-ethernet {

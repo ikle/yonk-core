@@ -12,11 +12,14 @@ show_spec () {
 	echo
 }
 
+show_spec conf	policy-auth
+
 show_spec conf	link-base
 show_spec conf  link-dhcp
 show_spec conf	link-ethernet
 show_spec conf	link-bonding
 show_spec conf	link-bridge
+show_spec conf	link-supplicant
 
 show_spec conf  service-ntp
 
