@@ -13,7 +13,6 @@ class link-base {
 
 class link-inet {
 	attrs address : "IP адрес с маской сети" {
-		value dhcp : "Получить адрес по DHCP"
 		type is ip-masked
 	}
 
@@ -21,4 +20,6 @@ class link-inet {
 		value on  : "Включено"
 		value off : "Выключено"
 	}
+
+	class link-dhcp
 }
