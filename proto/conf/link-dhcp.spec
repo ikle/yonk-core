@@ -1,4 +1,4 @@
-group policy : "Поилитики" {
+group policy : "Политики" {
 	nodes dhcp : "Политика DHCP" {
 		match name
 		class policy-dhcp
