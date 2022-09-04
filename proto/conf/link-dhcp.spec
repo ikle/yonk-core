@@ -11,7 +11,10 @@ class policy-dhcp {
 	attr gateway       = on  : "Принимать маршрут по-умолчанию"
 	attr dns-server    = on  : "Принимать адрес DNS сервера"
 	attr host-name     = on  : "Принимать имя узла"
-	attr domain-name   = on  : "Принимать имя сети"
+
+#	domain-name requested and accepted if host-name = on; domain-name
+#	requested if gateway = off and dns-server = on to filter DNS requests
+
 	attr mtu           = off : "Принимать MTU интерфейса"
 	attr static-routes = on  : "Принимать постоянные маршруты"
 	attr ntp-server    = off : "Принимать адрес NTP сервера"
