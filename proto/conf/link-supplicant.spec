@@ -17,7 +17,7 @@ class link-eapol {
 }
 
 class link-wlan {
-	nodes ssid : "Идентификатор сети" {
+	nodes peer : "Идентификатор сети (SSID)" {
 		attrs auth-policy : "Политика аутентификации" {
 			match name
 			ref policy auth *
