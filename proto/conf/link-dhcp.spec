@@ -5,15 +5,18 @@ group policy : "Политики" {
 	}
 }
 
+#
+# NOTE: The domain-name can be used to filter DNS requests on interface if
+# gateway = off and dns-server = on
+#
+
 class policy-dhcp {
 	attr description : "Описание политики"
 
 	attr gateway       = on  : "Принимать маршрут по-умолчанию"
 	attr dns-server    = on  : "Принимать адрес DNS сервера"
 	attr host-name     = on  : "Принимать имя узла"
-
-#	domain-name requested and accepted if host-name = on; domain-name
-#	requested if gateway = off and dns-server = on to filter DNS requests
+	attr domain-name   = on  : "Принимать имя сети"
 
 	attr mtu           = off : "Принимать MTU интерфейса"
 	attr static-routes = on  : "Принимать постоянные маршруты"
