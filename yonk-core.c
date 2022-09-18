@@ -272,7 +272,7 @@ no_delete:
 int yonk_delete (struct yonk *o, long id)
 {
 	long *list, i;
-	
+
 	if ((list = yonk_slaves (o, id)) == NULL)
 		return 0;
 
