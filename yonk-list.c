@@ -19,7 +19,7 @@ static int get_state (const struct yonk_node *o)
 
 static void indent (int state, int level, FILE *to)
 {
-	fprintf (to, "%c", state);
+	fprintf (to, "%c ", state);
 
 	for (; level > 0; --level)
 		fprintf (to, "    ");
