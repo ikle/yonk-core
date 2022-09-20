@@ -213,7 +213,8 @@ no_fetch:
 
 static int yonk_mark (struct yonk *o, long id)
 {
-	const char *req = "UPDATE tree SET changed = 1 WHERE id = ?";
+	const char *req = "UPDATE tree SET changed = 1 "
+			  "WHERE id = ? AND changed = 0";
 
 	if (!sqlite_compile(o->db, req, &o->mark))
 		return 0;
