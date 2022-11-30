@@ -1,6 +1,6 @@
 group interfaces : "Интерфейсы" {
 	nodes bonding : "Агрегированный интерфейс" {
-		match name "^bond"
+		match link-name "^bond"
 		class link-base, link-bonding
 	}
 }
@@ -30,7 +30,7 @@ class link-bonding {
 	}
 
 	attr primary : "Главное устройство" {
-		match name "^eth"
+		match link-name "^eth"
 		ref interfaces ethernet *  # must be part of this bonding group
 	}
 
@@ -39,7 +39,7 @@ class link-bonding {
 
 class link-bonding-port {
 	node bonding : "Агрегированный интерфейс" {
-		match name "^bond"
+		match link-name "^bond"
 		ref interfaces bonding *
 
 		attr port-id : "Номер порта 802.3ad" {

@@ -7,7 +7,7 @@ group service : "Сервисы" {
 
 class eapol-service {
 	attrs listen-on : "Иинтерфейс на котором принимаются запросы" {
-		match name
+		match link-name "^eth"
 		ref interfaces ethernet *
 	}
 

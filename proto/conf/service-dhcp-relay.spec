@@ -12,7 +12,7 @@ group service : "Сервисы" {
 			}
 
 			attr interface : "Интерфейс доступа к DHCP серверу" {
-				match name
+				match link-name
 				ref interfaces * *
 			}
 		}

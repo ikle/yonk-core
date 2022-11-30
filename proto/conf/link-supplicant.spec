@@ -1,6 +1,6 @@
 group interfaces : "Интерфейсы" {
 	nodes wireless : "Интерфейс беспроводной локальной сети" {
-		match name "^wlan"
+		match link-name "^wlan"
 		class link-base, link-wlan
 	}
 }

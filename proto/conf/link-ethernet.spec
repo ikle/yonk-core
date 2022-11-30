@@ -1,6 +1,6 @@
 group interfaces : "Интерфейсы" {
 	nodes ethernet : "Ethernet интерфейс" {
-		match name "^eth"
+		match link-name "^eth"
 		class link-base, link-ethernet-device
 	}
 }

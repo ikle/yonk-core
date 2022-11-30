@@ -1,6 +1,6 @@
 group interfaces : "Интерфейсы" {
 	nodes bridge : "Мостовой интерфейс" {
-		match name "^br"
+		match link-name "^br"
 		class link-base, link-bridge
 	}
 }
@@ -29,7 +29,7 @@ class link-bridge {
 
 class link-bridge-port {
 	node bridge : "Сетевой мост" {
-		match name "^br"
+		match link-name "^br"
 		ref interfaces bridge *
 
 		attr cost : "Стоимость маршрута для данного порта" {
