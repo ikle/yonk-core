@@ -26,7 +26,7 @@ class policy-dhcp {
 	attr irc-server    = off : "Принимать адрес IRC сервера"
 
 	attr server : "Адрес сервера" {
-		match ipv4-target
+		match ip-target
 	}
 }
 
