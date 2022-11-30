@@ -8,7 +8,7 @@ group service : "Сервисы" {
 
 		group server : "Параметры DHCP сервера" {
 			attr address : "Адрес DHCP сервера" {
-				type is ip-address
+				type is ip-target
 			}
 
 			attr interface : "Интерфейс доступа к DHCP серверу" {
