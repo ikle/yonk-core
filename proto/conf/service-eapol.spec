@@ -1,3 +1,5 @@
+require hostapd
+
 group service : "Сервисы" {
 	nodes eapol : "Сервис EAPoL" {
 		match name

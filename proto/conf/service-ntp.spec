@@ -1,3 +1,5 @@
+require openntpd
+
 group system : "Системные параметры" {
 	group ntp : "Настройка серверов NTP для получения времени" {
 		class system-ntp

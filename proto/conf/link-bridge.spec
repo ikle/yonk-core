@@ -1,3 +1,5 @@
+require ip
+
 group interfaces : "Интерфейсы" {
 	nodes bridge : "Мостовой интерфейс" {
 		match link-name "^br"

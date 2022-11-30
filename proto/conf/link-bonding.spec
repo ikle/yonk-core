@@ -1,3 +1,5 @@
+require ip
+
 group interfaces : "Интерфейсы" {
 	nodes bonding : "Агрегированный интерфейс" {
 		match link-name "^bond"

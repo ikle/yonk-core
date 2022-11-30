@@ -1,3 +1,5 @@
+require ip
+
 class link-base {
 	attr description : "Описание интерфейса"
 
