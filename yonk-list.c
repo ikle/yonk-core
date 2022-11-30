@@ -47,8 +47,8 @@ static void show_label (const char *key, const char *label, int leaf, FILE *to)
 	fprintf (to, leaf ? "\n" : " {\n");
 }
 
-static int
-yonk_list_attrs (struct yonk *o, int level, long attr, const char *name, FILE *to)
+static int yonk_list_attrs (struct yonk *o, int level, long attr,
+			    const char *name, int secure, FILE *to)
 {
 	long *v, i;
 	struct yonk_node *n;
@@ -61,15 +61,15 @@ yonk_list_attrs (struct yonk *o, int level, long attr, const char *name, FILE *t
 			continue;
 
 		indent (get_state (n), level, to);
-		show_label (name, n->label, 1, to);
+		show_label (name, n->secure > secure ? "***" : n->label, 1, to);
 	}
 
 	free (v);
 	return 1;
 }
 
-static int
-yonk_list_nodes (struct yonk *o, int level, long node, const char *name, FILE *to)
+static int yonk_list_nodes (struct yonk *o, int level, long node,
+			    const char *name, int secure, FILE *to)
 {
 	long *v, i;
 	struct yonk_node *n;
@@ -84,7 +84,7 @@ yonk_list_nodes (struct yonk *o, int level, long node, const char *name, FILE *t
 
 		indent (s = get_state (n), level, to);
 		show_label (name, n->label, 0, to);
-		yonk_list (o, level + 1, v[i], to);
+		yonk_list (o, level + 1, v[i], secure, to);
 		indent (s, level, to);
 		fprintf (to, "}\n");
 	}
@@ -93,7 +93,7 @@ yonk_list_nodes (struct yonk *o, int level, long node, const char *name, FILE *t
 	return 1;
 }
 
-int yonk_list (struct yonk *o, int level, long parent, FILE *to)
+int yonk_list (struct yonk *o, int level, long parent, int secure, FILE *to)
 {
 	long *v, i;
 	struct yonk_node *n;
@@ -111,18 +111,18 @@ int yonk_list (struct yonk *o, int level, long parent, FILE *to)
 		case YONK_GROUP:
 			indent (s = get_state (n), level, to);
 			show_label (NULL, n->label, 0, to);
-			yonk_list (o, level + 1, v[i], to);
+			yonk_list (o, level + 1, v[i], secure, to);
 			indent (s, level, to);
 			fprintf (to, "}\n");
 			break;
 		case YONK_NODE:
 			name = strdup (n->label);
-			yonk_list_nodes (o, level, v[i], name, to);
+			yonk_list_nodes (o, level, v[i], name, secure, to);
 			free (name);
 			break;
 		case YONK_ATTR:
 			name = strdup (n->label);
-			yonk_list_attrs (o, level, v[i], name, to);
+			yonk_list_attrs (o, level, v[i], name, secure, to);
 			free (name);
 			break;
 		}

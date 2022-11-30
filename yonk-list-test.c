@@ -23,7 +23,7 @@ int main (int argc, char *argv[])
 
 	ts = clock ();
 
-	yonk_list (o, 0, 0, stdout);
+	yonk_list (o, 0, 0, 0, stdout);
 
 	ts = clock () - ts;
 
