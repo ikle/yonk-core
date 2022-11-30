@@ -5,7 +5,7 @@ group interfaces : "Интерфейсы" {
 	}
 }
 
-class class link-bonding {
+class link-bonding {
 	attr mode = 802.3ad : "Режим агрегирования" {
 		value 802.3ad       : "Динамическое агрегирование IEEE 802.3ad"
 		value active-backup : "Отказоустойчивость, активный только slave"
@@ -37,7 +37,7 @@ class class link-bonding {
 	class link-bridge-port, link-ethernet
 }
 
-class class link-bonding-port {
+class link-bonding-port {
 	node bonding : "Агрегированный интерфейс" {
 		match name "^bond"
 		ref interfaces bonding *
