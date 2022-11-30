@@ -7,6 +7,8 @@ token
 	string	= /"([^"\\]|(\\["\\]))*"/
 	eol	= /\n+/				# and skip empty lines
 
+	word	= /[A-Za-z][^ \t\n]*/
+
 	colon	= ":"
 	open	= "{"
 	close	= "}"
@@ -15,7 +17,9 @@ token
 	star	= "*"
 
 grammar
-	spec	= (group | class)*
+	spec	= requre* (group | class)*
+
+	requre	= "requre" word		# dependency on executable in PATH
 
 	class	= "class" name                        ["{" eol child* "}"] eol
 	group	= "group" name             ":" string ["{" eol child* "}"] eol
