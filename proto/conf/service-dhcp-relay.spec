@@ -3,12 +3,12 @@ group service : "Сервисы" {
 		class service-dhcp-relay
 
 		attrs listen-on : "Адрес на котором принимаются запросы" {
-			type is ip-listen
+			match ip-listen
 		}
 
 		group server : "Параметры DHCP сервера" {
 			attr address : "Адрес DHCP сервера" {
-				type is ip-target
+				match ip-target
 			}
 
 			attr interface : "Интерфейс доступа к DHCP серверу" {

@@ -10,7 +10,7 @@ class link-base {
 
 class link-ethernet {
 	attr mac : "MAC адрес" {
-		type is macaddr
+		match macaddr
 	}
 
 	nodes vlan : "Идентификатор виртуальной сети" {
@@ -23,7 +23,7 @@ class link-ethernet {
 
 class link-inet {
 	attrs address : "IP адрес с маской сети" {
-		type is ip-masked
+		match ip-masked
 	}
 
 	attr proxy-arp = off : "Проксирование ARP"

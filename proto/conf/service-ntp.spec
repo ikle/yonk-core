@@ -3,7 +3,7 @@ group system : "Системные параметры" {
 		class system-ntp
 
 		attrs server : "DNS имя или IP адрес сервера" {
-			type is idn, ip-address
+			match idn or ip-address
 		}
 
 		attr sync-on-start = off : "Синхронизировать при старте"
@@ -15,7 +15,7 @@ group service : "Сервисы" {
 		class service-ntp
 
 		attrs listen-on : "Адрес на котором принимаются запросы" {
-			type is ip-listen
+			match ip-listen
 		}
 
 		attr stratum : "Часовой слой" {

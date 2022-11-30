@@ -29,21 +29,21 @@ class eapol-service {
 		attr ident : "NAS-Identifier"
 
 		attr own-ip : "NAS-IP-Address" {
-			type is ipv4-address
+			match ipv4-address
 		}
 
 		attr address : "Адрес RADIUS сервера" {
-			type is ip-target
+			match ip-target
 		}
 
 		attr auth-port = radius : "Порт аутентификации" {
-			type is ip-service
+			match ip-service
 		}
 
 		attr auth-key : "Ключ доступа к сервису аутентификации"
 
 		attr acct-port = radius-acct : "Порт регистрации" {
-			type is ip-service
+			match ip-service
 		}
 
 		attr acct-key : "Ключ доступа к сервису регистрации"
