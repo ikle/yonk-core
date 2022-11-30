@@ -16,7 +16,7 @@ class eapol-service {
 	}
 
 	attr reauth = 3600 : "Период переаутентификации в секундах" {
-		value off : "Переаутентификация отключе"
+		value off : "Переаутентификация отключена"
 		number from 1 to 86400
 	}
 
