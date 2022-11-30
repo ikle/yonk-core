@@ -10,12 +10,25 @@
 #include <stdlib.h>
 #include <time.h>
 
+#include <sys/time.h>
+
 #include <yonk/core.h>
+
+static long get_us (void)
+{
+	struct timeval tv;
+
+	if (gettimeofday (&tv, NULL) != 0)
+		return -1;
+
+	return tv.tv_sec * 1000000 + tv.tv_usec;
+}
 
 int main (int argc, char *argv[])
 {
 	struct yonk *o;
 	clock_t ts;
+	long us;
 	long i, k, t, a, *v;
 	struct yonk_node *n;
 
@@ -24,7 +37,7 @@ int main (int argc, char *argv[])
 		return 1;
 	}
 
-	ts = clock ();
+	ts = clock (); us = get_us ();
 
 	yonk_discard (o);
 
@@ -57,10 +70,11 @@ int main (int argc, char *argv[])
 	a = yonk_add (o, t, 0, "description",	YONK_ATTR,  0);
 	i = yonk_add (o, a, 0, "Cool link",	YONK_VALUE, 0);
 
-	ts = clock () - ts;
+	ts = clock () - ts; us = get_us () - us;
 
-	printf ("I: requests completed in %.3f ms\n",
-		ts * (1000.0 / CLOCKS_PER_SEC));
+	printf ("I: requests completed in %.3f ms (CPU time), "
+		"%.3f ms (real time)\n",
+		ts * (1000.0 / CLOCKS_PER_SEC), us * 0.001);
 
 	yonk_free (o);
 	return 0;
