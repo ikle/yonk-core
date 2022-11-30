@@ -1,5 +1,5 @@
 group policy : "Поилитики" {
-	nodes auth "Политика аутентификации" {
+	nodes auth : "Политика аутентификации" {
 		match name
 		class policy-auth
 	}
