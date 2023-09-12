@@ -37,8 +37,9 @@ static const char *init_req =
 	"	UNIQUE (parent, label)"
 	");"
 
-	"CREATE INDEX IF NOT EXISTS \"tree-parent\" ON tree (parent);"
-	"CREATE INDEX IF NOT EXISTS \"tree-link\"   ON tree (link)";
+	"CREATE INDEX IF NOT EXISTS \"tree-parent\"  ON tree (parent);"
+	"CREATE INDEX IF NOT EXISTS \"tree-link\"    ON tree (link);"
+	"CREATE INDEX IF NOT EXISTS \"tree-changed\" ON tree (changed)";
 
 struct yonk *yonk_alloc (const char *path, const char *mode)
 {
@@ -290,8 +291,11 @@ no_delete:
 
 int yonk_commit (struct yonk *o)
 {
-	const char *req_d = "DELETE FROM tree WHERE active = 1 AND dirty = 1";
-	const char *req_u = "UPDATE tree SET active = 1, dirty = 0, changed = 0";
+	const char *req_d = "DELETE FROM tree "
+			    "WHERE changed = 1 AND active = 1 AND dirty = 1";
+	const char *req_u = "UPDATE tree "
+			    "SET active = 1, dirty = 0, changed = 0 "
+			    "WHERE changed = 1";
 
 	return 	sqlite_compile (o->db, req_d, &o->comm_d) &&
 		sqlite_run (o->comm_d, "") &&
@@ -301,8 +305,10 @@ int yonk_commit (struct yonk *o)
 
 int yonk_discard (struct yonk *o)
 {
-	const char *req_d = "DELETE FROM tree WHERE active = 0 AND dirty = 1";
-	const char *req_u = "UPDATE tree SET dirty = 0, changed = 0";
+	const char *req_d = "DELETE FROM tree "
+			    "WHERE changed = 1 AND active = 0 AND dirty = 1";
+	const char *req_u = "UPDATE tree SET dirty = 0, changed = 0 "
+			    "WHERE changed = 1";
 
 	return	sqlite_compile (o->db, req_d, &o->dis_d) &&
 		sqlite_run (o->dis_d, "") &&
