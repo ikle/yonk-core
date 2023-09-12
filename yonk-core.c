@@ -152,8 +152,8 @@ long *yonk_childs (struct yonk *o, long parent, int sorted)
 {
 	const char *req_n = "SELECT count (id) FROM tree WHERE parent = ?";
 	const char *req_u = "SELECT id FROM tree WHERE parent = ?";
-	const char *req_s = "SELECT id FROM tree WHERE parent = ?"
-			    " ORDER BY label ASC";
+	const char *req_s = "SELECT id FROM tree WHERE parent = ? "
+			    "ORDER BY label ASC";
 	sqlite3_stmt *s;
 	long count, *list, i;
 
