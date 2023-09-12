@@ -214,6 +214,7 @@ no_fetch:
 
 static int yonk_mark (struct yonk *o, long id)
 {
+#if 0
 	const char *req = "UPDATE tree SET changed = 1 "
 			  "WHERE id = ? AND changed = 0";
 
@@ -225,6 +226,19 @@ static int yonk_mark (struct yonk *o, long id)
 			return 0;
 
 	return id == 0;
+#else
+	const char *req = "WITH RECURSIVE path AS ( "
+			  "  SELECT id, parent FROM tree WHERE id = ? "
+			  "UNION ALL "
+			  "  SELECT t.id, t.parent FROM tree t "
+			  "  JOIN path p ON p.parent = t.id "
+			  ") "
+			  "UPDATE tree SET changed = 1 "
+			  "WHERE id IN (SELECT id FROM path)";
+
+	return	sqlite_compile(o->db, req, &o->mark) &&
+		sqlite_run (o->mark, "l", id);
+#endif
 }
 
 long yonk_add (struct yonk *o, long parent, long link, const char *label,
@@ -248,6 +262,7 @@ long yonk_add (struct yonk *o, long parent, long link, const char *label,
 
 static int yonk_delete_tree (struct yonk *o, long id)
 {
+#if 0
 	const char *req_u = "UPDATE tree SET dirty = 1, changed = 1 "
 			    "WHERE id = ? AND active = 1";
 	const char *req_d = "DELETE FROM tree WHERE id = ? "
@@ -269,6 +284,31 @@ static int yonk_delete_tree (struct yonk *o, long id)
 no_delete:
 	free (list);
 	return 0;
+#else
+	const char *req_u = "WITH RECURSIVE branch AS ( "
+			    "  SELECT id, parent FROM tree "
+			    "  WHERE id = ? AND active = 1 "
+			    "UNION ALL"
+			    "  SELECT t.id, t.parent FROM tree t "
+			    "  JOIN branch x ON x.id = t.parent "
+			    ") "
+			    "UPDATE tree SET dirty = 1, changed = 1 "
+			    "WHERE id IN (SELECT id FROM branch)";
+	const char *req_d = "WITH RECURSIVE branch AS ( "
+			    "  SELECT id, parent FROM tree "
+			    "  WHERE id = ? AND active = 0 AND dirty = 1 "
+			    "UNION ALL"
+			    "  SELECT t.id, t.parent FROM tree t "
+			    "  JOIN branch x ON x.id = t.parent "
+			    ") "
+			    "DELETE FROM tree "
+			    "WHERE id IN (SELECT id FROM branch)";
+
+	return 	sqlite_compile (o->db, req_u, &o->del_u) &&
+		sqlite_run (o->del_u, "l", id) &&
+		sqlite_compile (o->db, req_d, &o->del_d) &&
+		sqlite_run (o->del_d, "l", id);
+#endif
 }
 
 int yonk_delete (struct yonk *o, long id)
