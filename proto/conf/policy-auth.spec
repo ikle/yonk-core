@@ -1,4 +1,4 @@
-group policy : "Поилитики" {
+group policy : "Политики" {
 	nodes auth : "Политика аутентификации" {
 		match name
 		class policy-auth
