@@ -18,7 +18,7 @@ class link-bonding {
 		value xor-hash      : "Балансировка, распределение на основе MAC адреса"
 	}
 
-	attr hash-mode = layer2 : "Политика хеширования в режимах xor-hash, 802.3ad и transmit-load-balance {
+	attr hash-mode = layer2 : "Политика хеширования в режимах xor-hash, 802.3ad и transmit-load-balance" {
 		value layer2   : "Хеш на основе протокола 2 уровня"
 		value layer2+3 : "Хеш на основе протоколов 2 и 3 уровней"
 		value layer3+4 : "Хеш на основе протоколов 3 и 4 уровней"
