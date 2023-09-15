@@ -1,7 +1,5 @@
 group service : "Сервисы" {
 	group dhcp-relay : "Сервис DHCP релея" {
-		class service-dhcp-relay
-
 		attrs listen-on : "Адрес на котором принимаются запросы" {
 			match ip-listen
 		}
