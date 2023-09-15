@@ -24,7 +24,7 @@ class link-ethernet {
 }
 
 class link-inet {
-	attrs address : "IP адрес с маской сети" {
+	attrs address : "IP адрес узла с маской сети" {
 		match ip-masked
 	}
 

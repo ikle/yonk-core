@@ -31,7 +31,7 @@ class policy-dhcp {
 }
 
 class link-dhcp {
-	attrs address : "IP адрес с маской сети" {
+	attrs address : "IP адрес узла с маской сети" {
 		value dhcp : "Получить адрес по DHCP"
 	}
 
