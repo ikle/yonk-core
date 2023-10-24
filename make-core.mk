@@ -1,7 +1,7 @@
 #
 # Colibri Build System
 #
-# Copyright (c) 2006-2022 Alexei A. Smekalkine <ikle@ikle.ru>
+# Copyright (c) 2006-2023 Alexei A. Smekalkine <ikle@ikle.ru>
 #
 # SPDX-License-Identifier: BSD-2-Clause
 #
@@ -43,12 +43,13 @@ all:
 #
 
 HEADERS	= $(wildcard include/*.h include/*/*.h include/*/*/*.h)
-SOURCES	= $(filter-out %-test.c %-tool.c %-service.c, $(wildcard *.c))
+SOURCES	= $(filter-out %-test.c %-tool.c %-service.c %-module.c, $(wildcard *.c))
 OBJECTS	= $(patsubst %.c,%.o, $(SOURCES))
 
 TESTS	= $(patsubst %-test.c,%-test, $(wildcard *-test.c))
 TOOLS	= $(patsubst %-tool.c,%, $(wildcard *-tool.c))
 SERVICES = $(patsubst %-service.c,%, $(wildcard *-service.c))
+MODULES	= $(patsubst %-module.c,%, $(wildcard *-module.c))
 
 #
 # rules to manage static libraries
@@ -195,3 +196,33 @@ install-services: build-services
 	install -s -m 755 $(SERVICES) $(DESTDIR)$(SBINDIR)
 
 endif  # build SERVICES
+
+#
+# rules to manage modules (private programs)
+#
+
+ifneq ($(MODULES),)
+ifdef LIBNAME
+
+%: %-module.c
+	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
+
+.PHONY: build-modules clean-modules install-modules
+
+all:     build-modules
+clean:   clean-modules
+install: install-modules
+
+$(MODULES): CFLAGS += -I$(CURDIR)/include
+$(MODULES): $(AFILE)
+
+build-modules: $(MODULES)
+clean-modules:
+	$(RM) $(MODULES)
+
+install-modules: build-modules
+	install -d $(DESTDIR)$(LIBDIR)$(LIBNAME)
+	install -s -m 755 $(MODULES) $(DESTDIR)$(LIBDIR)$(LIBNAME)
+
+endif  # LIBNAME
+endif  # build MODULES
